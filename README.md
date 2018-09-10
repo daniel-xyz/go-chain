@@ -11,4 +11,4 @@ This is my personal project to get into the Go programming language (Golang). Yo
 
 #### Outlook
 
-Eventually this client will become compatible with one of the Ethereum testnets and not connect to it's own (rather stupid) chain.
+Eventually this client will become compatible with the Ethereum Blockchain as soon as the first prototype works with it's own (rather stupid) chain.

@@ -11,7 +11,7 @@ type block struct {
 
 // GetGenesis returns a block struct that contains static data. Can be used to initialize a new chain.
 func GetGenesis() block {
-	return block{"some timestamp", "the lastHash", "the hash", "and data, too"}
+	return block{"10.09.2018 19:48", "-", "0x862b8akn2o7tsb", "some data"}
 }
 
 func (b block) String() string {
