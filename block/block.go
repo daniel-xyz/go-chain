@@ -13,7 +13,7 @@ type Block struct {
 	Data      string
 }
 
-// New returns a new block with given fields and a hash field. Hash is auto-generated based on the given fields.
+// New returns a "Block" with given fields and a hash field. Hash is auto-generated based on the given fields.
 func New(timestamp string, lastHash string, data string) Block {
 	hash := getHash(timestamp, lastHash, data)
 
