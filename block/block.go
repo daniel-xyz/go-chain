@@ -7,10 +7,10 @@ import (
 
 // Block is chained with other Blocks (lastHash) to form the blockchain.
 type Block struct {
-	timestamp string
-	lastHash  string
-	hash      string
-	data      string
+	Timestamp string
+	LastHash  string
+	Hash      string
+	Data      string
 }
 
 // New returns a new block with given fields and a hash field. Hash is auto-generated based on the given fields.
@@ -26,12 +26,12 @@ func NewGenesis() Block {
 }
 
 func (b Block) String() string {
-	return fmt.Sprintf("::::: Block Info :::::\n\nTimestamp: %s\nLast Hash: %s\nHash: %s\nData: %s\n", b.timestamp, b.lastHash, b.hash, b.data)
+	return fmt.Sprintf("::::: Block Info :::::\n\nTimestamp: %s\nLast Hash: %s\nHash: %s\nData: %s\n", b.Timestamp, b.LastHash, b.Hash, b.Data)
 }
 
 // VerifyHash returns "true" if the hash inside the "Block" is a valid hash of itself.
 func (b Block) VerifyHash() bool {
-	return getHash(b.timestamp, b.lastHash, b.data) == b.hash
+	return getHash(b.Timestamp, b.LastHash, b.Data) == b.Hash
 }
 
 func getHash(timestamp string, lastHash string, data string) string {
