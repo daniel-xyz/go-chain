@@ -1,8 +1,11 @@
+[![GoDoc](https://godoc.org/github.com/Flur3x/go-chain?status.svg)](https://godoc.org/github.com/Flur3x/go-chain)
+
 This is my personal project to get into the Go programming language (Golang). You should not use this Blockchain or Client, except you want to have some fun! 🤙
 
 #### Checklist
 
-- [ ] Miner (without mining difficulty at first)
+- [x] Hash & verify blocks
+- [ ] Miner - Add Blocks to Blockchain (without mining difficulty at first)
 - [ ] Blockchain-Validation
 - [ ] Mining Dffficulty (nonce)
 - [ ] Wallets

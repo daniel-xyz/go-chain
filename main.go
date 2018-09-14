@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/Flur3x/go-chain/blockchain"
+	"github.com/Flur3x/go-chain/block"
 )
 
 func main() {
-	genesisBlock := blockchain.GetGenesis()
+	block := block.New("14-09-2018", "ksh37isdai", "data!")
 
-	fmt.Printf("%+v", genesisBlock)
+	fmt.Println(block)
+	fmt.Println(block.VerifyHash())
 }
