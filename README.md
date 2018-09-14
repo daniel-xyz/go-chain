@@ -5,12 +5,12 @@ This is my personal project to get into the Go programming language (Golang). Yo
 #### Checklist
 
 - [x] Hash & verify blocks
-- [ ] Miner - Add Blocks to Blockchain (without mining difficulty at first)
-- [ ] Blockchain-Validation
-- [ ] Mining Dffficulty (nonce)
-- [ ] Wallets
-- [ ] P2P / Transaction Pools
-- [ ] Web Interface
+- [ ] Add Blocks to Blockchain
+- [ ] Validate Blockchain
+- [ ] Real Mining with Dfficulty (nonce)
+- [ ] Wallets/Balances
+- [ ] Transaction Pool and P2P-Sync
+- [ ] Web Interface/Electron App
 
 #### Outlook
 
