@@ -14,7 +14,7 @@ type Block struct {
 }
 
 // New returns a "Block" with given fields and a hash field. Hash is auto-generated based on the given fields.
-func New(timestamp string, lastHash string, data string) Block {
+func New(timestamp, lastHash, data string) Block {
 	hash := getHash(timestamp, lastHash, data)
 
 	return Block{timestamp, lastHash, hash, data}
@@ -34,7 +34,7 @@ func (b Block) VerifyHash() bool {
 	return getHash(b.Timestamp, b.LastHash, b.Data) == b.Hash
 }
 
-func getHash(timestamp string, lastHash string, data string) string {
+func getHash(timestamp, lastHash, data string) string {
 	h := sha256.New()
 
 	h.Write([]byte(timestamp + lastHash + data))

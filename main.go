@@ -10,5 +10,5 @@ func main() {
 	block := block.New("14-09-2018", "ksh37isdai", "data!")
 
 	fmt.Println(block)
-	fmt.Println(block.VerifyHash())
+	fmt.Println("Hash is valid: ", block.VerifyHash())
 }
