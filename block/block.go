@@ -26,7 +26,7 @@ func NewGenesis() Block {
 }
 
 func (b Block) String() string {
-	return fmt.Sprintf("::::: Block Info :::::\n\nTimestamp: %s\nLast Hash: %s\nHash: %s\nData: %s\n", b.Timestamp, b.LastHash, b.Hash, b.Data)
+	return fmt.Sprintf("::::: Block Info :::::\n\nTimestamp: %s\nLast Hash: %s\nHash: %s\nData: %s\n\n", b.Timestamp, b.LastHash, b.Hash, b.Data)
 }
 
 // VerifyHash returns "true" if the hash inside the "Block" is a valid hash of itself.

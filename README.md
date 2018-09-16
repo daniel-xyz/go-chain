@@ -5,7 +5,7 @@ This is my personal project to get into the Go programming language (Golang). Yo
 #### Checklist
 
 - [x] Hash & verify blocks
-- [ ] Add Blocks to Blockchain
+- [x] Add Blocks to Blockchain
 - [ ] Validate Blockchain
 - [ ] Real Mining with Dfficulty (nonce)
 - [ ] Wallets/Balances
