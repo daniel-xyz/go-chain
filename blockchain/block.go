@@ -1,4 +1,4 @@
-package block
+package blockchain
 
 import (
 	"crypto/sha256"
@@ -13,20 +13,16 @@ type Block struct {
 	Data      string
 }
 
-// New returns a "Block" with given fields and a hash field. Hash is auto-generated based on the given fields.
-func New(timestamp, lastHash, data string) Block {
+// NewBlock returns a "Block" with given fields and a hash field. Hash is auto-generated based on the given fields.
+func NewBlock(timestamp, lastHash, data string) Block {
 	hash := getHash(timestamp, lastHash, data)
 
 	return Block{timestamp, lastHash, hash, data}
 }
 
-// NewGenesis returns a "Block" that contains static data. Can be used to initialize a new chain.
-func NewGenesis() Block {
-	return New("10.09.2018 19:48", "-", "some data 👀")
-}
-
-func (b Block) String() string {
-	return fmt.Sprintf("::::: Block Info :::::\n\nTimestamp: %s\nLast Hash: %s\nHash: %s\nData: %s\n\n", b.Timestamp, b.LastHash, b.Hash, b.Data)
+// NewGenesisBlock returns a "Block" that contains static data. Can be used to initialize a new chain.
+func NewGenesisBlock() Block {
+	return NewBlock("10.09.2018 19:48", "-", "some data 👀")
 }
 
 // VerifyHash returns "true" if the hash inside the "Block" is a valid hash of itself.
@@ -40,4 +36,8 @@ func getHash(timestamp, lastHash, data string) string {
 	h.Write([]byte(timestamp + lastHash + data))
 
 	return fmt.Sprintf("%x", h.Sum(nil))
+}
+
+func (b Block) String() string {
+	return fmt.Sprintf("::::: Block Info :::::\n\nTimestamp: %s\nLast Hash: %s\nHash: %s\nData: %s\n\n", b.Timestamp, b.LastHash, b.Hash, b.Data)
 }

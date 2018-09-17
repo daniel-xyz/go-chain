@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/Flur3x/go-chain?status.svg)](https://godoc.org/github.com/Flur3x/go-chain)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Flur3x/go-chain)](https://goreportcard.com/report/github.com/Flur3x/go-chain) [![GoDoc](https://godoc.org/github.com/Flur3x/go-chain?status.svg)](https://godoc.org/github.com/Flur3x/go-chain)
 
 This is my personal project to get into the Go programming language (Golang). You should not use this Blockchain or Client, except you want to have some fun! 🤙
 
@@ -6,7 +6,8 @@ This is my personal project to get into the Go programming language (Golang). Yo
 
 - [x] Hash & verify blocks
 - [x] Add Blocks to Blockchain
-- [ ] Validate Blockchain
+- [x] Validate Blockchain
+- [ ] Use Blake2 hashes https://blake2.net/
 - [ ] Real Mining with Dfficulty (nonce)
 - [ ] Wallets/Balances
 - [ ] Transaction Pool and P2P-Sync
