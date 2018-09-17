@@ -25,20 +25,20 @@ func (chain *Blockchain) AddBlock(b Block) {
 func (chain *Blockchain) IsValidChain() bool {
 	isGenesisBlockValid := cmp.Equal(chain.Blocks[0], NewGenesisBlock())
 
-	if !isGenesisBlockValid {
-		return false
-	}
+	hasOnlyValidHashes := func() bool {
+		for i := 1; i < len(chain.Blocks); i++ {
+			isHashValid := chain.Blocks[i].VerifyHash()
+			isLastHashValid := chain.Blocks[i].LastHash == chain.Blocks[i-1].Hash
 
-	for i := 1; i < len(chain.Blocks); i++ {
-		isHashValid := chain.Blocks[i].VerifyHash()
-		isLastHashValid := chain.Blocks[i].LastHash == chain.Blocks[i-1].Hash
-
-		if !isHashValid || !isLastHashValid {
-			return false
+			if !isHashValid || !isLastHashValid {
+				return false
+			}
 		}
+
+		return true
 	}
 
-	return true
+	return isGenesisBlockValid && hasOnlyValidHashes()
 }
 
 func (chain Blockchain) String() string {

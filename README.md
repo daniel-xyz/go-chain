@@ -7,7 +7,6 @@ This is my personal project to get into the Go programming language (Golang). Yo
 - [x] Hash & verify blocks
 - [x] Add Blocks to Blockchain
 - [x] Validate Blockchain
-- [ ] Use Blake2 hashes https://blake2.net/
 - [ ] Real Mining with Dfficulty (nonce)
 - [ ] Wallets/Balances
 - [ ] Transaction Pool and P2P-Sync
