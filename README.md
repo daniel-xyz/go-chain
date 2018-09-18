@@ -7,9 +7,10 @@ This is my personal project to get into the Go programming language (Golang). Yo
 - [x] Hash & verify blocks
 - [x] Add Blocks to Blockchain
 - [x] Validate Blockchain
-- [ ] Real Mining with Dfficulty (nonce)
+- [x] Real Mining with Dfficulty (nonce)
+- [ ] Transaction Pool
 - [ ] Wallets/Balances
-- [ ] Transaction Pool and P2P-Sync
+- [ ] P2P-Sync
 - [ ] Web Interface/Electron App
 
 #### Outlook
