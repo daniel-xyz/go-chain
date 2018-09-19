@@ -8,8 +8,8 @@ This is my personal project to get into the Go programming language (Golang). Yo
 - [x] Add Blocks to Blockchain
 - [x] Validate Blockchain
 - [x] Real Mining with Dfficulty (nonce)
-- [ ] Transaction Pool
-- [ ] Wallets/Balances
+- [ ] Transaction Pool & Add Transactions to Blocks
+- [ ] Wallets
 - [ ] P2P-Sync
 - [ ] Web Interface/Electron App
 - [ ] Error Management

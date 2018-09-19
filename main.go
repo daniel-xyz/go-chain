@@ -9,10 +9,10 @@ import (
 
 func main() {
 	testTransactions()
-	// setupTestnet()
+	// testMining()
 }
 
-func setupTestnet() {
+func testMining() {
 	chain := blockchain.New()
 
 	block1 := blockchain.MineBlock(chain.Blocks[0], "I'm the second Block!")
@@ -33,8 +33,6 @@ func setupTestnet() {
 
 func testTransactions() {
 	t := transactions.New(1, 2, 1000)
-
-	// fmt.Println(t)
 
 	transactions.UpdateOrAddToPool(t)
 	transactions.UpdateOrAddToPool(t)
