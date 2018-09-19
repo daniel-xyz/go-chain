@@ -12,6 +12,8 @@ This is my personal project to get into the Go programming language (Golang). Yo
 - [ ] Wallets/Balances
 - [ ] P2P-Sync
 - [ ] Web Interface/Electron App
+- [ ] Error Management
+- [ ] > 90% Test Coverage
 
 #### Outlook
 

@@ -13,7 +13,10 @@ type Blockchain struct {
 
 // New returns a "Blockchain" struct with the genesis block as the first and only item in it's "Blocks" slice.
 func New() Blockchain {
-	return Blockchain{Blocks: []Block{NewGenesisBlock()}}
+	blockSlice := make([]Block, 1, 100)
+	blockSlice[0] = NewGenesisBlock()
+
+	return Blockchain{Blocks: blockSlice}
 }
 
 // AddBlock adds a "Block" to the given "Blockchain" reference.

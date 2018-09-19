@@ -4,10 +4,12 @@ import (
 	"fmt"
 
 	"github.com/Flur3x/go-chain/blockchain"
+	"github.com/Flur3x/go-chain/transactions"
 )
 
 func main() {
-	setupTestnet()
+	testTransactions()
+	// setupTestnet()
 }
 
 func setupTestnet() {
@@ -27,4 +29,13 @@ func setupTestnet() {
 
 	fmt.Println("\n", chain)
 	fmt.Println("Is valid chain: ", chain.IsValidChain())
+}
+
+func testTransactions() {
+	t := transactions.New(1, 2, 1000)
+
+	// fmt.Println(t)
+
+	transactions.UpdateOrAddToPool(t)
+	transactions.UpdateOrAddToPool(t)
 }
