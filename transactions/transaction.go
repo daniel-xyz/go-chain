@@ -2,6 +2,7 @@ package transactions
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/Flur3x/go-chain/wallet"
 	"github.com/google/uuid"
@@ -33,12 +34,23 @@ type Transaction struct {
 func New(from Address, to Address, amount uint64) Transaction {
 	outputs := []Output{
 		Output{to, amount},
-		Output{from, 0}, // todo replace with something like "senderWallet.balance - amount"
+		Output{from, 0}, // TODO - replace with something like "senderWallet.balance - amount"
 	}
 
 	return Transaction{uuid.New(), Input{to, amount}, outputs}
 }
 
+// JoinSliceValuesToString takes a slice of transactions and returns it as a single string.
+func JoinSliceValuesToString(txs []Transaction) string {
+	var stringSlice []string
+
+	for _, tx := range txs {
+		stringSlice = append(stringSlice, tx.String())
+	}
+
+	return strings.Join(stringSlice, ",")
+}
+
 func (t Transaction) String() string {
-	return fmt.Sprintf("ID: %s\nInput: %+v\nOutputs: %+v\n", t.ID, t.Input, t.Outputs)
+	return fmt.Sprintf("\n # ID: %s\n-> Input: %+v\n<- Outputs: %+v\n", t.ID, t.Input, t.Outputs)
 }
