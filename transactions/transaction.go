@@ -40,8 +40,8 @@ func New(from Address, to Address, amount uint64) Transaction {
 	return Transaction{uuid.New(), Input{to, amount}, outputs}
 }
 
-// JoinSliceValuesToString takes a slice of transactions and returns it as a single string.
-func JoinSliceValuesToString(txs []Transaction) string {
+// JoinTransactionsToString takes a slice of transactions and returns it as a single string.
+func JoinTransactionsToString(txs []Transaction) string {
 	var stringSlice []string
 
 	for _, tx := range txs {

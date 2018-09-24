@@ -50,7 +50,7 @@ func hash(timestamp int64, lastHash string, txs []tx, difficulty uint64, nonce i
 	stringifiedIntegers := fmt.Sprintf("%v", timestamp) + fmt.Sprintf("%v", difficulty) + fmt.Sprintf("%v", nonce)
 	h := sha256.New()
 
-	h.Write([]byte(lastHash + transactions.JoinSliceValuesToString(txs) + stringifiedIntegers))
+	h.Write([]byte(lastHash + transactions.JoinTransactionsToString(txs) + stringifiedIntegers))
 
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
