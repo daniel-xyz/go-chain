@@ -1,7 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/Flur3x/go-chain/blockchain"
 	"github.com/Flur3x/go-chain/miner"
@@ -15,22 +16,9 @@ func main() {
 func testRun() {
 	chain := blockchain.New()
 
-	addTransactions()
+	go miner.StartMining(&chain)
 
-	miner.Mine(&chain)
-	miner.Mine(&chain)
-	miner.Mine(&chain)
-	miner.Mine(&chain)
-	miner.Mine(&chain)
-
-	fmt.Println("\n", chain)
-	fmt.Println("Is valid chain: ", chain.IsValidChain())
-}
-
-func addTransactions() {
-	transactions.UpdateOrAddToPool(transactions.New(1, 2, 65))
-	transactions.UpdateOrAddToPool(transactions.New(3, 2, 210))
-	transactions.UpdateOrAddToPool(transactions.New(1, 8, 80))
-	transactions.UpdateOrAddToPool(transactions.New(6, 1, 3200))
-	transactions.UpdateOrAddToPool(transactions.New(4, 3, 51))
+	for range time.NewTicker(5 * time.Second).C {
+		transactions.UpdateOrAddToPool(transactions.New(1, 2, uint64(rand.Int63n(10000))))
+	}
 }

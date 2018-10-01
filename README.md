@@ -9,14 +9,11 @@ This is my personal project to get into the Go programming language (Golang) for
 - [x] Validate Blockchain
 - [x] Real Mining with Dfficulty (nonce)
 - [x] Transaction Pool & Add Transactions to Blocks
+- [ ] Client API
+- [ ] Simple Web Interface
 - [ ] Wallets
 - [ ] P2P-Sync
-- [ ] Web Interface/Electron App
 - [ ] Error Management
 - [ ] > 90% Test Coverage
-
-#### Outlook
-
-Eventually this client (or a fork from it) will become compatible with the Ethereum Blockchain as soon as the first prototype works with it's own (rather stupid) chain.
 
 Have fun ❤️ and give feedback!
