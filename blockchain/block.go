@@ -56,7 +56,7 @@ func hash(timestamp int64, lastHash string, txs []tx, difficulty uint64, nonce i
 }
 
 func currentDifficulty(lastBlock Block) uint64 {
-	targetBlockTime := 5 // seconds it should take to mine a block
+	targetBlockTime := 20 // seconds it should take to mine a block
 	currentTimestamp := currentTimestamp()
 	increaseDifficulty := lastBlock.Timestamp+int64(targetBlockTime) > currentTimestamp
 

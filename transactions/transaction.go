@@ -37,7 +37,7 @@ func New(from Address, to Address, amount uint64) Transaction {
 		Output{from, 0}, // TODO - replace with something like "senderWallet.balance - amount"
 	}
 
-	return Transaction{uuid.New(), Input{to, amount}, outputs}
+	return Transaction{uuid.New(), Input{from, amount}, outputs}
 }
 
 // JoinTransactionsToString takes a slice of transactions and returns it as a single string.

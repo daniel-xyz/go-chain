@@ -10,10 +10,10 @@ This is my personal project to get into the Go programming language (Golang) for
 - [x] Real Mining with Dfficulty (nonce)
 - [x] Transaction Pool & Add Transactions to Blocks
 - [ ] Client API
-- [ ] Simple Web Interface
 - [ ] Wallets
 - [ ] P2P-Sync
 - [ ] Error Management
 - [ ] > 90% Test Coverage
+- [ ] Simple Web Interface
 
 Have fun ❤️ and give feedback!

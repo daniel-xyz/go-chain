@@ -7,9 +7,8 @@ import (
 	"github.com/Flur3x/go-chain/transactions"
 )
 
-// StartMining adds all pending and valid transactions from the transaction pool into a new block.
-// This block will the be mined and added to the blockchain state. It repeates this cycle until the client is stopped.
-func StartMining(state *blockchain.State) {
+// Start mining. Collect pending transactions that are valid and add them to a new mined Block.
+func Start(state *blockchain.State) {
 	for {
 		mine(state)
 	}
