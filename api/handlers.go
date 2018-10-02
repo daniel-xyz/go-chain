@@ -11,16 +11,17 @@ import (
 )
 
 func getBlockchain(w http.ResponseWriter, r *http.Request) {
-	s := blockchain.GetState()
+	s, err := blockchain.GetState()
 
-	w.Header().Set("Content-Type", "application/json")
-
-	json.NewEncoder(w).Encode(s)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		json.NewEncoder(w).Encode(s)
+		w.Header().Set("Content-Type", "application/json")
+	}
 }
 
 func postTransaction(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	var t struct {
 		From   wallet.Address `json:"from"`
 		To     wallet.Address `json:"to"`
@@ -28,6 +29,6 @@ func postTransaction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewDecoder(r.Body).Decode(&t)
-
 	transactions.UpdateOrAddToPool(transactions.New(t.From, t.To, t.Amount))
+	w.Header().Set("Content-Type", "application/json")
 }

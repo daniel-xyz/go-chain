@@ -9,7 +9,7 @@ This is my personal project to get into the Go programming language (Golang) for
 - [x] Validate Blockchain
 - [x] Real Mining with Dfficulty (nonce)
 - [x] Transaction Pool & Add Transactions to Blocks
-- [ ] Client API
+- [x] Client API
 - [ ] Error Management
 - [ ] Multi-Core Mining
 - [ ] Wallets

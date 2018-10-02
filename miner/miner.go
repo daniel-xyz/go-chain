@@ -6,16 +6,23 @@ import (
 )
 
 // Start mining. Collect pending transactions that are valid and add them to a new mined Block.
-func Start() {
+func Start() error {
 	for {
-		mine()
+		if err := mine(); err != nil {
+			return err
+		}
 	}
 }
 
-func mine() {
+func mine() error {
 	txs := transactions.ValidTransactions()
 	transactions.Clear()
 
-	block := blockchain.MineBlock(txs)
-	blockchain.AddBlock(block)
+	block, err := blockchain.MineBlock(txs)
+
+	if err != nil {
+		return err
+	}
+
+	return blockchain.AddBlock(block)
 }

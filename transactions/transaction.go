@@ -6,7 +6,10 @@ import (
 
 	"github.com/Flur3x/go-chain/wallet"
 	"github.com/google/uuid"
+	logging "github.com/op/go-logging"
 )
+
+var log = logging.MustGetLogger("")
 
 // Address of an account. Can receive or send value.
 type Address = wallet.Address

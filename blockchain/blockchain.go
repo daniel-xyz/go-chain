@@ -3,11 +3,13 @@ package blockchain
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/google/go-cmp/cmp"
+	logging "github.com/op/go-logging"
 )
+
+var log = logging.MustGetLogger("")
 
 // State contains the general blockchain state, most importantly all mined blocks.
 type State struct {
@@ -27,13 +29,22 @@ func New() State {
 }
 
 // AddBlock adds a "Block" to the given blockchain state.
-func AddBlock(b Block) {
-	s := GetState()
+func AddBlock(b Block) error {
+	s, err := GetState()
+
+	if err != nil {
+		return err
+	}
+
 	s.Blocks = append(s.Blocks, b)
 
-	setState(s)
+	if err := setState(s); err != nil {
+		return err
+	}
 
-	fmt.Println("Added Block to chain: \n\n", b)
+	log.Info("::::: Block added to chain :::::\n\n", b)
+
+	return nil
 }
 
 // IsValidChain validates if all blocks contain valid hashes and are chained properly through their "lastHash".
@@ -66,14 +77,18 @@ func (s State) String() string {
 	return blocks
 }
 
-func lastBlock() Block {
-	s := GetState()
+func lastBlock() (Block, error) {
+	s, err := GetState()
 
-	return s.Blocks[len(s.Blocks)-1]
+	if err != nil {
+		return Block{}, nil
+	}
+
+	return s.Blocks[len(s.Blocks)-1], nil
 }
 
 // GetState returns the current state of the blockchain with all their blocks.
-func GetState() State {
+func GetState() (State, error) {
 	return readFromFile()
 }
 
@@ -81,24 +96,24 @@ func setState(state State) error {
 	return writeToFile(state)
 }
 
-func readFromFile() State {
+func readFromFile() (State, error) {
+	var state State
+
 	file, err := stateFile()
 
 	defer file.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		return state, err
 	}
-
-	var state State
 
 	decoder := json.NewDecoder(file)
 
 	if err := decoder.Decode(&state); err != nil {
-		log.Fatal(err)
+		return state, err
 	}
 
-	return state
+	return state, nil
 }
 
 func writeToFile(state State) error {
@@ -107,13 +122,13 @@ func writeToFile(state State) error {
 	defer file.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	encoder := json.NewEncoder(file)
 
 	if err := encoder.Encode(state); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	return err

@@ -1,7 +1,6 @@
 package transactions
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/google/uuid"
@@ -16,9 +15,9 @@ func UpdateOrAddToPool(transaction Transaction) {
 	mutex.Lock()
 
 	if _, ok := transactionPool[transaction.ID]; ok {
-		defer fmt.Printf("Transaction updated:\n%s\n", transaction)
+		defer log.Infof("Transaction updated:\n%s\n", transaction)
 	} else {
-		defer fmt.Printf("Transaction added:\n%s\n", transaction)
+		defer log.Infof("Transaction created:\n%s\n", transaction)
 	}
 
 	transactionPool[transaction.ID] = transaction
