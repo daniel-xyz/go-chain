@@ -1,12 +1,15 @@
 package blockchain
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/google/go-cmp/cmp"
 )
 
-// State contains all mined blocks.
+// State contains the general blockchain state, most importantly all mined blocks.
 type State struct {
 	Blocks []Block
 }
@@ -16,12 +19,21 @@ func New() State {
 	blockSlice := make([]Block, 1, 100)
 	blockSlice[0] = NewGenesisBlock()
 
-	return State{Blocks: blockSlice}
+	state := State{Blocks: blockSlice}
+
+	setState(state)
+
+	return state
 }
 
 // AddBlock adds a "Block" to the given blockchain state.
-func (s *State) AddBlock(b Block) {
+func AddBlock(b Block) {
+	s := GetState()
 	s.Blocks = append(s.Blocks, b)
+
+	setState(s)
+
+	fmt.Println("Added Block to chain: \n\n", b)
 }
 
 // IsValidChain validates if all blocks contain valid hashes and are chained properly through their "lastHash".
@@ -44,11 +56,6 @@ func (s *State) IsValidChain() bool {
 	return isGenesisBlockValid && hasOnlyValidHashes()
 }
 
-// LastBlock returns the last block in the current chain.
-func (s State) LastBlock() Block {
-	return s.Blocks[len(s.Blocks)-1]
-}
-
 func (s State) String() string {
 	var blocks string
 
@@ -57,4 +64,61 @@ func (s State) String() string {
 	}
 
 	return blocks
+}
+
+func lastBlock() Block {
+	s := GetState()
+
+	return s.Blocks[len(s.Blocks)-1]
+}
+
+// GetState returns the current state of the blockchain with all their blocks.
+func GetState() State {
+	return readFromFile()
+}
+
+func setState(state State) error {
+	return writeToFile(state)
+}
+
+func readFromFile() State {
+	file, err := stateFile()
+
+	defer file.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var state State
+
+	decoder := json.NewDecoder(file)
+
+	if err := decoder.Decode(&state); err != nil {
+		log.Fatal(err)
+	}
+
+	return state
+}
+
+func writeToFile(state State) error {
+	file, err := stateFile()
+
+	defer file.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	encoder := json.NewEncoder(file)
+
+	if err := encoder.Encode(state); err != nil {
+		log.Fatal(err)
+	}
+
+	return err
+}
+
+func stateFile() (*os.File, error) {
+	return os.OpenFile("state.json", os.O_RDWR|os.O_CREATE, 0666)
 }

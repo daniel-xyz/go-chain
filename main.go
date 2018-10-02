@@ -15,10 +15,10 @@ func main() {
 }
 
 func testRun() {
-	chain := blockchain.New()
+	blockchain.New()
 
-	go api.Start(&chain)
-	go miner.Start(&chain)
+	go api.Start()
+	go miner.Start()
 
 	for range time.NewTicker(5 * time.Second).C {
 		transactions.UpdateOrAddToPool(transactions.New(1, 2, uint64(rand.Int63n(10000))))

@@ -22,7 +22,10 @@ type Block struct {
 }
 
 // MineBlock returns a "Block" with given fields and a hash field. Hash is auto-generated based on the given fields.
-func MineBlock(lastBlock Block, txs []tx) Block {
+// TODO - remove first param lastBlock
+func MineBlock(txs []tx) Block {
+	lastBlock := lastBlock()
+
 	for nonce := 0; ; nonce++ {
 		difficulty := currentDifficulty(lastBlock)
 		timestamp := currentTimestamp()

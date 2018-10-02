@@ -9,11 +9,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var chainState *blockchain.State
-
 func getBlockchain(w http.ResponseWriter, r *http.Request) {
+	s := blockchain.GetState()
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(chainState)
+	json.NewEncoder(w).Encode(s)
 }
 
 // func postTransaction(w http.ResponseWriter, r *http.Request) {
@@ -27,8 +27,7 @@ func getBlockchain(w http.ResponseWriter, r *http.Request) {
 // }
 
 // Start initializes the api router with all REST endpoints.
-func Start(state *blockchain.State) {
-	chainState = state
+func Start() {
 	router := mux.NewRouter()
 
 	router.
