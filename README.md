@@ -11,9 +11,8 @@ This is my personal project to get into the Go programming language (Golang) for
 - [x] Transaction Pool & Add Transactions to Blocks
 - [x] Client API
 - [x] Error Management
-- [ ] Multi-Core Mining
 - [ ] Wallets
-- [ ] P2P-Sync
 - [ ] > 90% Test Coverage
+- [ ] P2P-Sync
 
 Have fun ❤️ and give feedback!

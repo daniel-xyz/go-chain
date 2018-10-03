@@ -22,7 +22,6 @@ type Block struct {
 }
 
 // MineBlock returns a "Block" with given fields and a hash field. Hash is auto-generated based on the given fields.
-// TODO - remove first param lastBlock
 func MineBlock(txs []tx) (Block, error) {
 	lastBlock, err := lastBlock()
 
@@ -61,7 +60,7 @@ func hash(timestamp int64, lastHash string, txs []tx, difficulty uint64, nonce i
 }
 
 func currentDifficulty(lastBlock Block) uint64 {
-	targetBlockTime := 30 // seconds it should take to mine a block
+	targetBlockTime := 10 // seconds it should take to mine a block
 	currentTimestamp := currentTimestamp()
 	increaseDifficulty := lastBlock.Timestamp+int64(targetBlockTime) > currentTimestamp
 
@@ -81,5 +80,5 @@ func currentTimestamp() int64 {
 }
 
 func (b Block) String() string {
-	return fmt.Sprintf("Timestamp: %d\n Last Hash: %s\n Hash: %s\n Transactions: %s\n\n", b.Timestamp, b.LastHash, b.Hash, b.Transactions)
+	return fmt.Sprintf("Timestamp: %d\n Last Hash: %s\n Hash: %s\n Difficulty: %d\n Transactions: %s\n\n", b.Timestamp, b.LastHash, b.Hash, b.Difficulty, b.Transactions)
 }

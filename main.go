@@ -26,8 +26,7 @@ func runSimulation() {
 	go api.Start(errorReport)
 	go miner.Start(errorReport)
 
-	log.Info("Simulation has started 🌈\n")
-	log.Info("Fake Transactions are being created and Blocks mined ...\n")
+	log.Info("\nSimulation started 🌈\n\nFake Transactions are being created and Blocks mined ...\n\n")
 
 	for range time.NewTicker(12 * time.Second).C {
 		fakeTransaction := transactions.New(1, 2, uint64(rand.Int63n(10000)))
