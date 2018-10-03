@@ -8,6 +8,7 @@ import (
 	"github.com/Flur3x/go-chain/blockchain"
 	"github.com/Flur3x/go-chain/miner"
 	"github.com/Flur3x/go-chain/transactions"
+	"github.com/Flur3x/go-chain/wallet"
 	logging "github.com/op/go-logging"
 )
 
@@ -23,13 +24,15 @@ func main() {
 func runSimulation() {
 	blockchain.New()
 
+	myWallet := wallet.New()
+
 	go api.Start(errorReport)
 	go miner.Start(errorReport)
 
 	log.Info("\nSimulation started 🌈\n\nFake Transactions are being created and Blocks mined ...\n\n")
 
-	for range time.NewTicker(12 * time.Second).C {
-		fakeTransaction := transactions.New(1, 2, uint64(rand.Int63n(10000)))
+	for range time.NewTicker(5 * time.Second).C {
+		fakeTransaction := transactions.New(1, 2, uint64(rand.Int63n(10000)), myWallet)
 
 		transactions.UpdateOrAddToPool(fakeTransaction)
 	}

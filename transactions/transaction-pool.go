@@ -3,15 +3,16 @@ package transactions
 import (
 	"sync"
 
+	c "github.com/Flur3x/go-chain/common"
 	"github.com/google/uuid"
 )
 
 var mutex sync.Mutex
-var transactionPool = make(map[uuid.UUID]Transaction, 100)
+var transactionPool = make(map[uuid.UUID]c.Transaction, 100)
 
 // UpdateOrAddToPool takes a Transaction and adds it to the pool.
 // If a Transaction with the same ID is already there, it will be replaced.
-func UpdateOrAddToPool(transaction Transaction) {
+func UpdateOrAddToPool(transaction c.Transaction) {
 	mutex.Lock()
 
 	if _, ok := transactionPool[transaction.ID]; ok {
@@ -26,12 +27,12 @@ func UpdateOrAddToPool(transaction Transaction) {
 
 // ValidTransactions returns all transactions within the pool that
 // are valid and therefore ready to be added to a Block.
-func ValidTransactions() []Transaction {
+func ValidTransactions() []c.Transaction {
 	mutex.Lock()
-	validTxs := make([]Transaction, 0, len(transactionPool))
+	validTxs := make([]c.Transaction, 0, len(transactionPool))
 
 	for _, tx := range transactionPool {
-		if tx.isValid() {
+		if tx.IsValid() {
 			validTxs = append(validTxs, tx)
 		}
 	}
@@ -44,20 +45,6 @@ func ValidTransactions() []Transaction {
 // Clear overrides the transactionPool with a new, empty one.
 func Clear() {
 	mutex.Lock()
-	transactionPool = make(map[uuid.UUID]Transaction, 100)
+	transactionPool = make(map[uuid.UUID]c.Transaction, 100)
 	mutex.Unlock()
-}
-
-func (t Transaction) isValid() bool {
-	return t.inputEqualsOutput()
-}
-
-func (t Transaction) inputEqualsOutput() bool {
-	var totalOutput uint64
-
-	for _, o := range t.Outputs {
-		totalOutput += o.Amount
-	}
-
-	return totalOutput == t.Input.Amount
 }

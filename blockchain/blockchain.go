@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	c "github.com/Flur3x/go-chain/common"
 	"github.com/google/go-cmp/cmp"
 	logging "github.com/op/go-logging"
 )
@@ -13,12 +14,12 @@ var log = logging.MustGetLogger("")
 
 // State contains the general blockchain state, most importantly all mined blocks.
 type State struct {
-	Blocks []Block
+	Blocks []c.Block
 }
 
 // New returns a "State" struct with the genesis block as the first and only value in it's "Blocks" slice.
 func New() State {
-	blockSlice := make([]Block, 1, 100)
+	blockSlice := make([]c.Block, 1, 100)
 	blockSlice[0] = NewGenesisBlock()
 
 	state := State{Blocks: blockSlice}
@@ -29,7 +30,7 @@ func New() State {
 }
 
 // AddBlock adds a "Block" to the given blockchain state.
-func AddBlock(b Block) error {
+func AddBlock(b c.Block) error {
 	s, err := GetState()
 
 	if err != nil {
@@ -53,7 +54,7 @@ func (s *State) IsValidChain() bool {
 
 	hasOnlyValidHashes := func() bool {
 		for i := 1; i < len(s.Blocks); i++ {
-			isHashValid := s.Blocks[i].VerifyHash()
+			isHashValid := VerifyHash(s.Blocks[i])
 			isLastHashValid := s.Blocks[i].LastHash == s.Blocks[i-1].Hash
 
 			if !isHashValid || !isLastHashValid {
@@ -77,11 +78,11 @@ func (s State) String() string {
 	return blocks
 }
 
-func lastBlock() (Block, error) {
+func lastBlock() (c.Block, error) {
 	s, err := GetState()
 
 	if err != nil {
-		return Block{}, nil
+		return c.Block{}, nil
 	}
 
 	return s.Blocks[len(s.Blocks)-1], nil
