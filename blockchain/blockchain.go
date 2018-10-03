@@ -125,6 +125,14 @@ func writeToFile(state State) error {
 		return err
 	}
 
+	if err := file.Truncate(0); err != nil {
+		return err
+	}
+
+	if _, err := file.Seek(0, 0); err != nil {
+		return err
+	}
+
 	encoder := json.NewEncoder(file)
 
 	if err := encoder.Encode(state); err != nil {

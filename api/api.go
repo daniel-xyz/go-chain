@@ -7,7 +7,7 @@ import (
 )
 
 // Start initializes the api router with all REST endpoints.
-func Start() {
+func Start(errorReport chan<- error) {
 	router := mux.NewRouter()
 
 	router.
@@ -20,5 +20,7 @@ func Start() {
 		HandlerFunc(postTransaction).
 		Methods("POST")
 
-	http.ListenAndServe(":3001", router)
+	if err := http.ListenAndServe(":3001", router); err != nil {
+		errorReport <- err
+	}
 }

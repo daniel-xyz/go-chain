@@ -6,10 +6,10 @@ import (
 )
 
 // Start mining. Collect pending transactions that are valid and add them to a new mined Block.
-func Start() error {
+func Start(errorReport chan<- error) {
 	for {
 		if err := mine(); err != nil {
-			return err
+			errorReport <- err
 		}
 	}
 }

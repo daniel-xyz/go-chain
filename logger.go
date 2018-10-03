@@ -10,6 +10,9 @@ import (
 func init() {
 	logFile, err := os.OpenFile("errors.log", os.O_RDWR|os.O_CREATE, 0666)
 
+	err = logFile.Truncate(0)
+	_, err = logFile.Seek(0, 0)
+
 	if err != nil {
 		fmt.Println("Could not load errors.log file")
 	}

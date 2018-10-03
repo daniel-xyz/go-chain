@@ -12,16 +12,19 @@ import (
 )
 
 var log = logging.MustGetLogger("")
+var errorReport = make(chan error)
 
 func main() {
-	runSimulation()
+	go runSimulation()
+
+	catchErrors()
 }
 
 func runSimulation() {
 	blockchain.New()
 
-	go api.Start()
-	go miner.Start()
+	go api.Start(errorReport)
+	go miner.Start(errorReport)
 
 	log.Info("Simulation has started 🌈\n")
 	log.Info("Fake Transactions are being created and Blocks mined ...\n")
@@ -30,5 +33,18 @@ func runSimulation() {
 		fakeTransaction := transactions.New(1, 2, uint64(rand.Int63n(10000)))
 
 		transactions.UpdateOrAddToPool(fakeTransaction)
+	}
+}
+
+func catchErrors() {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Errorf("%+v\n", r)
+			log.Infof("More detailed logs in the errors.log file\n")
+		}
+	}()
+
+	for r := range errorReport {
+		panic("Client crashed. Error: " + r.Error())
 	}
 }
