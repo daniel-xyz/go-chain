@@ -18,13 +18,14 @@ var errorReport = make(chan error)
 func main() {
 	go runSimulation()
 
-	catchErrors()
+	handleErrors()
 }
 
 func runSimulation() {
 	blockchain.New()
 
 	myWallet, err := wallet.New()
+	foreignWallet, err := wallet.New()
 
 	if err != nil {
 		errorReport <- err
@@ -33,10 +34,11 @@ func runSimulation() {
 	go api.Start(errorReport)
 	go miner.Start(errorReport)
 
-	log.Info("\nSimulation started 🌈\n\nFake Transactions are being created and Blocks mined ...\n\n")
+	log.Info("\nSimulation started 🌈\n\nFake Transactions are being created and Blocks mined ...\n")
+	log.Infof("Created new wallet:\n %+v\n", myWallet)
 
 	for range time.NewTicker(5 * time.Second).C {
-		fakeTransaction, err := transactions.New(1, 2, uint64(rand.Int63n(10000)), myWallet)
+		fakeTransaction, err := transactions.New(myWallet.Address, foreignWallet.Address, uint64(rand.Int63n(10000)), myWallet)
 
 		if err != nil {
 			errorReport <- err
@@ -46,7 +48,7 @@ func runSimulation() {
 	}
 }
 
-func catchErrors() {
+func handleErrors() {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Errorf("%+v\n", r)

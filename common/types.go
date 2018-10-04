@@ -1,6 +1,8 @@
 package common
 
 import (
+	"crypto/ecdsa"
+	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
 	"math/big"
@@ -8,8 +10,8 @@ import (
 	"github.com/google/uuid"
 )
 
-// Address of an wallet.
-type Address uint64
+// Address of an wallet that is derived from the publicKey.
+type Address string
 
 // Balance of an wallet.
 type Balance uint64
@@ -20,13 +22,13 @@ type Signature struct {
 	S *big.Int
 }
 
-// Input defines how much value an Address receives.
+// Input defines how much value an address receives.
 type Input struct {
 	Address Address
 	Amount  uint64
 }
 
-// Output defines how much value an Address sends.
+// Output defines how much value an address sends.
 type Output struct {
 	Address Address
 	Amount  uint64
@@ -39,6 +41,33 @@ type Output struct {
 // Signer can take a []byte hash and sign it to verify it's validity.
 type Signer interface {
 	Sign([]byte) (Signature, error)
+}
+
+//------------------------------------
+// Wallet
+//------------------------------------
+
+// Wallet represents a single user/client wallet in the go-chain.
+type Wallet struct {
+	Address    Address
+	PublicKey  ecdsa.PublicKey
+	PrivateKey ecdsa.PrivateKey
+	Balance    Balance
+}
+
+// Sign uses the private key of the wallet to cryptographically sign the given hashed value.
+func (w Wallet) Sign(h []byte) (Signature, error) {
+	r, s, err := ecdsa.Sign(rand.Reader, &w.PrivateKey, h[:])
+
+	if err != nil {
+		return Signature{}, err
+	}
+
+	return Signature{R: r, S: s}, nil
+}
+
+func (w Wallet) String() string {
+	return fmt.Sprintf("\n Address: %0x\n Private Key: %s\n Balanace %d\n", w.Address, w.PrivateKey.D, w.Balance)
 }
 
 //------------------------------------

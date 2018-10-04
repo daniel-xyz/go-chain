@@ -18,8 +18,8 @@ func getBlockchain(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(s)
 	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(s)
 
 }
 
@@ -42,7 +42,7 @@ func postTransaction(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewDecoder(r.Body).Decode(&model)
 	transactions.UpdateOrAddToPool(t)
-	w.Header().Set("Content-Type", "application/json")
 }
