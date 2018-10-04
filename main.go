@@ -38,7 +38,8 @@ func runSimulation() {
 	log.Infof("Created new wallet:\n %+v\n", myWallet)
 
 	for range time.NewTicker(5 * time.Second).C {
-		fakeTransaction, err := transactions.New(myWallet.Address, foreignWallet.Address, uint64(rand.Int63n(10000)), myWallet)
+		randomAmount := uint64(rand.Int63n(10000))
+		fakeTransaction, err := transactions.New(myWallet.Address, foreignWallet.Address, randomAmount, myWallet)
 
 		if err != nil {
 			errorReport <- err

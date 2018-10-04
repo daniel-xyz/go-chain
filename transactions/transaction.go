@@ -15,8 +15,14 @@ func New(from c.Address, to c.Address, amount uint64, signer c.Signer) (c.Transa
 	var err error
 
 	outputs := []c.Output{
-		c.Output{Address: to, Amount: amount},
-		c.Output{Address: from, Amount: 0}, // TODO - replace with something like "senderWallet.balance - amount"
+		c.Output{
+			Address: to,
+			Amount:  amount,
+		},
+		c.Output{
+			Address: from,
+			Amount:  0, // TODO - replace with something like "senderWallet.balance - amount"
+		},
 	}
 
 	t := c.Transaction{
