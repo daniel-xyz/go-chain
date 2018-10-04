@@ -1,30 +1,41 @@
 package wallet
 
 import (
-	"crypto/sha256"
-	"fmt"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
 
-	"github.com/Flur3x/go-chain/common"
+	c "github.com/Flur3x/go-chain/common"
 )
+
+const initialBalance = 5000
 
 // Wallet represents a single user/client wallet in the go-chain.
 type Wallet struct {
-	address    common.Address
-	balance    common.Balance
-	publicKey  string
-	privateKey string
+	address    c.Address
+	balance    c.Balance
+	publicKey  ecdsa.PublicKey
+	privateKey ecdsa.PrivateKey
 }
 
 // New returns a wallet
-func New() Wallet {
-	return Wallet{0, 0, "ottopublic", "foobarkey"}
+func New() (Wallet, error) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+
+	if err != nil {
+		return Wallet{}, err
+	}
+
+	return Wallet{0, initialBalance, privateKey.PublicKey, *privateKey}, nil
 }
 
 // Sign uses the private key of the wallet to cryptographically sign the given hashed value.
-func (w Wallet) Sign(v common.Hashable) string {
-	h := sha256.New()
+func (w Wallet) Sign(h []byte) (c.Signature, error) {
+	r, s, err := ecdsa.Sign(rand.Reader, &w.privateKey, h[:])
 
-	h.Write([]byte(v.Hash() + w.privateKey))
+	if err != nil {
+		return c.Signature{}, err
+	}
 
-	return fmt.Sprintf("%x", h.Sum(nil))
+	return c.Signature{R: r, S: s}, nil
 }

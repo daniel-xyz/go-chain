@@ -24,7 +24,11 @@ func main() {
 func runSimulation() {
 	blockchain.New()
 
-	myWallet := wallet.New()
+	myWallet, err := wallet.New()
+
+	if err != nil {
+		errorReport <- err
+	}
 
 	go api.Start(errorReport)
 	go miner.Start(errorReport)
@@ -32,7 +36,11 @@ func runSimulation() {
 	log.Info("\nSimulation started 🌈\n\nFake Transactions are being created and Blocks mined ...\n\n")
 
 	for range time.NewTicker(5 * time.Second).C {
-		fakeTransaction := transactions.New(1, 2, uint64(rand.Int63n(10000)), myWallet)
+		fakeTransaction, err := transactions.New(1, 2, uint64(rand.Int63n(10000)), myWallet)
+
+		if err != nil {
+			errorReport <- err
+		}
 
 		transactions.UpdateOrAddToPool(fakeTransaction)
 	}

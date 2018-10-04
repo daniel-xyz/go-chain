@@ -15,22 +15,34 @@ func getBlockchain(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		json.NewEncoder(w).Encode(s)
-		w.Header().Set("Content-Type", "application/json")
+		return
 	}
+
+	json.NewEncoder(w).Encode(s)
+	w.Header().Set("Content-Type", "application/json")
+
 }
 
 func postTransaction(w http.ResponseWriter, r *http.Request) {
-	var t struct {
+	var model struct {
 		From   c.Address `json:"from"`
 		To     c.Address `json:"to"`
 		Amount uint64    `json:"amount"`
 	}
 
-	myWallet := wallet.New()
+	myWallet, err := wallet.New()
 
-	json.NewDecoder(r.Body).Decode(&t)
-	transactions.UpdateOrAddToPool(transactions.New(t.From, t.To, t.Amount, myWallet))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	t, err := transactions.New(model.From, model.To, model.Amount, myWallet)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	json.NewDecoder(r.Body).Decode(&model)
+	transactions.UpdateOrAddToPool(t)
 	w.Header().Set("Content-Type", "application/json")
 }

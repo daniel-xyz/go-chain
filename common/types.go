@@ -3,6 +3,7 @@ package common
 import (
 	"crypto/sha256"
 	"fmt"
+	"math/big"
 
 	"github.com/google/uuid"
 )
@@ -12,6 +13,12 @@ type Address uint64
 
 // Balance of an wallet.
 type Balance uint64
+
+// Signature is composed of a pair of integers that is the result of the Sign function.
+type Signature struct {
+	R *big.Int
+	S *big.Int
+}
 
 // Input defines how much value an Address receives.
 type Input struct {
@@ -29,14 +36,9 @@ type Output struct {
 // Interfaces
 //------------------------------------
 
-// Hashable can be cryptographically hashed. Should return a hash string represantation of the pointer.
-type Hashable interface {
-	Hash() string
-}
-
-// Signer can take a value and sign it to verify it's validity.
+// Signer can take a []byte hash and sign it to verify it's validity.
 type Signer interface {
-	Sign(Hashable) string
+	Sign([]byte) (Signature, error)
 }
 
 //------------------------------------
@@ -48,9 +50,10 @@ type Transaction struct {
 	ID        uuid.UUID
 	Input     Input
 	Outputs   []Output
-	Signature string
+	Signature Signature
 }
 
+// IsValid returns "true" if transaction is valid
 func (t Transaction) IsValid() bool {
 	return t.inputEqualsOutput()
 }
@@ -66,12 +69,12 @@ func (t Transaction) inputEqualsOutput() bool {
 }
 
 // Hash returns a sha256 string based on the given transaction.
-func (t Transaction) Hash() string {
+func (t Transaction) Hash() []byte {
 	h := sha256.New()
 
 	h.Write([]byte(fmt.Sprintf("%+v", t)))
 
-	return fmt.Sprintf("%x", h.Sum(nil))
+	return h.Sum(nil)
 }
 
 func (t Transaction) String() string {
