@@ -38,9 +38,9 @@ Body (`content-type: application/json`):
 
 ```json
 {
-    "from": (address string),
-    "to": (address string),
-    "amount": (number)
+  "from": "any string",
+  "to": "any string",
+  "amount": "any integer"
 }
 ```
 
