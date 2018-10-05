@@ -25,6 +25,11 @@ func runSimulation() {
 	blockchain.New()
 
 	myWallet, err := wallet.New()
+
+	if err != nil {
+		errorReport <- err
+	}
+
 	foreignWallet, err := wallet.New()
 
 	if err != nil {

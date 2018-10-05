@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -21,7 +22,11 @@ func MineBlock(txs []c.Transaction) (c.Block, error) {
 	for nonce := 0; ; nonce++ {
 		difficulty := currentDifficulty(lastBlock)
 		timestamp := currentTimestamp()
-		hash := hash(timestamp, lastBlock.Hash, txs, difficulty, nonce)
+		hash, err := hash(timestamp, lastBlock.Hash, txs, difficulty, nonce)
+
+		if err != nil {
+			return c.Block{}, nil
+		}
 
 		if strings.HasPrefix(hash, strings.Repeat("0", int(difficulty))) {
 			return c.Block{
@@ -49,17 +54,26 @@ func NewGenesisBlock() c.Block {
 }
 
 // VerifyHash returns "true" if the hash inside the "Block" is a valid hash of itself.
-func VerifyHash(b c.Block) bool {
-	return hash(b.Timestamp, b.LastHash, b.Transactions, b.Difficulty, b.Nonce) == b.Hash
+func VerifyHash(b c.Block) (bool, error) {
+	hash, err := hash(b.Timestamp, b.LastHash, b.Transactions, b.Difficulty, b.Nonce)
+
+	if err != nil {
+		return false, err
+	}
+
+	return hash == b.Hash, errors.New("this is an error")
 }
 
-func hash(timestamp int64, lastHash string, txs []c.Transaction, difficulty uint64, nonce int) string {
+func hash(timestamp int64, lastHash string, txs []c.Transaction, difficulty uint64, nonce int) (string, error) {
 	stringifiedIntegers := fmt.Sprintf("%v%v%v", timestamp, difficulty, nonce)
+	stringToHash := lastHash + transactions.JoinTransactionsToString(txs) + stringifiedIntegers
 	h := sha256.New()
 
-	h.Write([]byte(lastHash + transactions.JoinTransactionsToString(txs) + stringifiedIntegers))
+	if _, err := h.Write([]byte(stringToHash)); err != nil {
+		return "", err
+	}
 
-	return fmt.Sprintf("%x", h.Sum(nil))
+	return fmt.Sprintf("%x", h.Sum(nil)), nil
 }
 
 func currentDifficulty(lastBlock c.Block) uint64 {

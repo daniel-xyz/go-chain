@@ -2,7 +2,6 @@ package blockchain
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 
 	c "github.com/Flur3x/go-chain/common"
@@ -53,9 +52,16 @@ func (s *State) IsValidChain() bool {
 	isGenesisBlockValid := cmp.Equal(s.Blocks[0], NewGenesisBlock())
 
 	hasOnlyValidHashes := func() bool {
+		log.Warning("ha")
 		for i := 1; i < len(s.Blocks); i++ {
-			isHashValid := VerifyHash(s.Blocks[i])
+
+			isHashValid, err := VerifyHash(s.Blocks[i])
 			isLastHashValid := s.Blocks[i].LastHash == s.Blocks[i-1].Hash
+
+			if err != nil {
+				log.Warning("Block hash verification error. Might be a corrupt block:\n", s.Blocks[i])
+				return false
+			}
 
 			if !isHashValid || !isLastHashValid {
 				return false
@@ -72,7 +78,7 @@ func (s State) String() string {
 	var blocks string
 
 	for _, block := range s.Blocks {
-		blocks = blocks + fmt.Sprintf("%s", block)
+		blocks = blocks + block.String()
 	}
 
 	return blocks

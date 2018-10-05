@@ -1,20 +1,26 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	logging "github.com/op/go-logging"
 )
 
-func init() {
-	logFile, err := os.OpenFile("errors.log", os.O_RDWR|os.O_CREATE, 0666)
+const initFailed = "Could not initialize logging. This is a bad sign!"
 
-	err = logFile.Truncate(0)
-	_, err = logFile.Seek(0, 0)
+func init() {
+	logFile, err := os.OpenFile("errors.log", os.O_RDWR|os.O_CREATE, 0600)
 
 	if err != nil {
-		fmt.Println("Could not load errors.log file")
+		panic(initFailed)
+	}
+
+	if err := logFile.Truncate(0); err != nil {
+		panic(initFailed)
+	}
+
+	if _, err := logFile.Seek(0, 0); err != nil {
+		panic(initFailed)
 	}
 
 	consoleFormatter := logging.MustStringFormatter(
@@ -31,6 +37,5 @@ func init() {
 	backendLogfileLeveled := logging.AddModuleLevel(backendLogfile)
 	backendLogfileLeveled.SetLevel(logging.ERROR, "")
 
-	// Set the backends to be used.
 	logging.SetBackend(backendConsole, backendLogfileLeveled)
 }
