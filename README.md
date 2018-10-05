@@ -16,3 +16,34 @@ This is my personal project to get into the Go programming language (Golang) for
 - [ ] P2P-Sync
 
 Have fun ❤️ and give feedback!
+
+#### Start client
+
+Run `go run`
+
+It will log the output to stdout, so you'll be seeing what is going on in your console.
+Errors will be written into the errors.log and the current state of the blockchain persisted in state.json. Currently it just runs as a simulation and therefore resets the state with every new run.
+
+#### Make API requests
+
+There is a really small API (without validation) just to get the current state and post new transactions from outside the client.
+
+##### GET http://localhost:3001/blockchain
+
+Response will be with `content-type: application/json`
+
+##### POST http://localhost:3001/transaction
+
+Body (`content-type: application/json`):
+
+```json
+{
+    "from": (address string),
+    "to": (address string),
+    "amount": (number)
+}
+```
+
+#### Testing
+
+Run `go test ./..`
