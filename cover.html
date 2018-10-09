@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/Flur3x/go-chain/blockchain/block.go (19.4%)</option>
+				
+				<option value="file1">github.com/Flur3x/go-chain/blockchain/blockchain.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package blockchain
+
+import (
+        "crypto/sha256"
+        "errors"
+        "fmt"
+        "strings"
+        "time"
+
+        c "github.com/Flur3x/go-chain/common"
+        "github.com/Flur3x/go-chain/transactions"
+)
+
+// MineBlock returns a "Block" with given fields and a hash field. Hash is auto-generated based on the given fields.
+func MineBlock(txs []c.Transaction) (c.Block, error) <span class="cov0" title="0">{
+        lastBlock, err := lastBlock()
+
+        if err != nil </span><span class="cov0" title="0">{
+                return c.Block{}, err
+        }</span>
+
+        <span class="cov0" title="0">for nonce := 0; ; nonce++ </span><span class="cov0" title="0">{
+                difficulty := currentDifficulty(lastBlock)
+                timestamp := currentTimestamp()
+                hash, err := hash(timestamp, lastBlock.Hash, txs, difficulty, nonce)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.Block{}, nil
+                }</span>
+
+                <span class="cov0" title="0">if strings.HasPrefix(hash, strings.Repeat("0", int(difficulty))) </span><span class="cov0" title="0">{
+                        return c.Block{
+                                Timestamp:    timestamp,
+                                LastHash:     lastBlock.Hash,
+                                Hash:         hash,
+                                Transactions: txs,
+                                Difficulty:   difficulty,
+                                Nonce:        nonce,
+                        }, nil
+                }</span>
+        }
+}
+
+// NewGenesisBlock returns a "Block" that contains static data. Can be used to initialize a new chain.
+func NewGenesisBlock() c.Block <span class="cov8" title="1">{
+        return c.Block{
+                Timestamp:    0,
+                LastHash:     "-",
+                Hash:         "genesis-hash",
+                Transactions: []c.Transaction{},
+                Difficulty:   6,
+                Nonce:        0,
+        }
+}</span>
+
+// VerifyHash returns "true" if the hash inside the "Block" is a valid hash of itself.
+func VerifyHash(b c.Block) (bool, error) <span class="cov0" title="0">{
+        hash, err := hash(b.Timestamp, b.LastHash, b.Transactions, b.Difficulty, b.Nonce)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return false, err
+        }</span>
+
+        <span class="cov0" title="0">return hash == b.Hash, errors.New("this is an error")</span>
+}
+
+func hash(timestamp int64, lastHash string, txs []c.Transaction, difficulty uint64, nonce int) (string, error) <span class="cov8" title="1">{
+        stringifiedIntegers := fmt.Sprintf("%v%v%v", timestamp, difficulty, nonce)
+        stringToHash := lastHash + transactions.JoinTransactionsToString(txs) + stringifiedIntegers
+        h := sha256.New()
+
+        if _, err := h.Write([]byte(stringToHash)); err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        <span class="cov8" title="1">return fmt.Sprintf("%x", h.Sum(nil)), nil</span>
+}
+
+func currentDifficulty(lastBlock c.Block) uint64 <span class="cov0" title="0">{
+        targetBlockTime := 15 // seconds it should take to mine a block
+        currentTimestamp := currentTimestamp()
+        increaseDifficulty := lastBlock.Timestamp+int64(targetBlockTime) &gt; currentTimestamp
+
+        if increaseDifficulty </span><span class="cov0" title="0">{
+                return lastBlock.Difficulty + 1
+        }</span>
+
+        <span class="cov0" title="0">if lastBlock.Difficulty &gt; 1 </span><span class="cov0" title="0">{
+                return lastBlock.Difficulty - 1
+        }</span>
+
+        <span class="cov0" title="0">return 1</span>
+}
+
+func currentTimestamp() int64 <span class="cov0" title="0">{
+        return time.Now().Unix()
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package blockchain
+
+import (
+        "encoding/json"
+        "os"
+
+        c "github.com/Flur3x/go-chain/common"
+        "github.com/google/go-cmp/cmp"
+        logging "github.com/op/go-logging"
+)
+
+var log = logging.MustGetLogger("")
+
+// State contains the general blockchain state, most importantly all mined blocks.
+type State struct {
+        Blocks []c.Block `json:"blocks"`
+}
+
+// New returns a "State" struct with the genesis block as the first and only value in it's "Blocks" slice.
+func New() State <span class="cov0" title="0">{
+        blockSlice := make([]c.Block, 1, 100)
+        blockSlice[0] = NewGenesisBlock()
+
+        state := State{Blocks: blockSlice}
+
+        setState(state)
+
+        return state
+}</span>
+
+// AddBlock adds a "Block" to the given blockchain state.
+func AddBlock(b c.Block) error <span class="cov0" title="0">{
+        s, err := GetState()
+
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">s.Blocks = append(s.Blocks, b)
+
+        if err := setState(s); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">log.Info("::::: Block added to chain :::::\n\n", b)
+
+        return nil</span>
+}
+
+// IsValidChain validates if all blocks contain valid hashes and are chained properly through their "lastHash".
+func (s *State) IsValidChain() bool <span class="cov0" title="0">{
+        isGenesisBlockValid := cmp.Equal(s.Blocks[0], NewGenesisBlock())
+
+        hasOnlyValidHashes := func() bool </span><span class="cov0" title="0">{
+                log.Warning("ha")
+                for i := 1; i &lt; len(s.Blocks); i++ </span><span class="cov0" title="0">{
+
+                        isHashValid, err := VerifyHash(s.Blocks[i])
+                        isLastHashValid := s.Blocks[i].LastHash == s.Blocks[i-1].Hash
+
+                        if err != nil </span><span class="cov0" title="0">{
+                                log.Warning("Block hash verification error. Might be a corrupt block:\n", s.Blocks[i])
+                                return false
+                        }</span>
+
+                        <span class="cov0" title="0">if !isHashValid || !isLastHashValid </span><span class="cov0" title="0">{
+                                return false
+                        }</span>
+                }
+
+                <span class="cov0" title="0">return true</span>
+        }
+
+        <span class="cov0" title="0">return isGenesisBlockValid &amp;&amp; hasOnlyValidHashes()</span>
+}
+
+func (s State) String() string <span class="cov0" title="0">{
+        var blocks string
+
+        for _, block := range s.Blocks </span><span class="cov0" title="0">{
+                blocks = blocks + block.String()
+        }</span>
+
+        <span class="cov0" title="0">return blocks</span>
+}
+
+func lastBlock() (c.Block, error) <span class="cov0" title="0">{
+        s, err := GetState()
+
+        if err != nil </span><span class="cov0" title="0">{
+                return c.Block{}, nil
+        }</span>
+
+        <span class="cov0" title="0">return s.Blocks[len(s.Blocks)-1], nil</span>
+}
+
+// GetState returns the current state of the blockchain with all their blocks.
+func GetState() (State, error) <span class="cov0" title="0">{
+        return readFromFile()
+}</span>
+
+func setState(state State) error <span class="cov0" title="0">{
+        return writeToFile(state)
+}</span>
+
+func readFromFile() (State, error) <span class="cov0" title="0">{
+        var state State
+
+        file, err := stateFile()
+
+        defer file.Close()
+
+        if err != nil </span><span class="cov0" title="0">{
+                return state, err
+        }</span>
+
+        <span class="cov0" title="0">decoder := json.NewDecoder(file)
+
+        if err := decoder.Decode(&amp;state); err != nil </span><span class="cov0" title="0">{
+                return state, err
+        }</span>
+
+        <span class="cov0" title="0">return state, nil</span>
+}
+
+func writeToFile(state State) error <span class="cov0" title="0">{
+        file, err := stateFile()
+
+        defer file.Close()
+
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">if err := file.Truncate(0); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">if _, err := file.Seek(0, 0); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">encoder := json.NewEncoder(file)
+
+        if err := encoder.Encode(state); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return err</span>
+}
+
+func stateFile() (*os.File, error) <span class="cov0" title="0">{
+        return os.OpenFile("state.json", os.O_RDWR|os.O_CREATE, 0666)
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

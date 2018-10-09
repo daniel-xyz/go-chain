@@ -1,17 +1,18 @@
-package common
+package crypto
 
 import (
 	"crypto/ecdsa"
 	"crypto/sha256"
 	"math/big"
 
+	t "github.com/Flur3x/go-chain/types"
 	"github.com/btcsuite/btcutil/base58"
 	"golang.org/x/crypto/ripemd160"
 )
 
 // GenerateAddress returns an address that is more readable than the public key, since a public key consists of two values (x and y coordinates).
 // https://medium.com/@vedran_s/cryptography-how-to-get-a-bitcoin-address-from-public-key-bd43fed72086
-func GenerateAddress(p ecdsa.PublicKey) Address {
+func GenerateAddress(p ecdsa.PublicKey) t.Address {
 	var xy big.Int
 
 	xy.Add(p.X, p.Y)
@@ -45,5 +46,5 @@ func GenerateAddress(p ecdsa.PublicKey) Address {
 	op7 := append(op3, op6...)
 
 	// Make it more readable before returning it.
-	return Address(base58.Encode(op7))
+	return t.Address(base58.Encode(op7))
 }

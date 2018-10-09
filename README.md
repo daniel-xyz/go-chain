@@ -46,4 +46,4 @@ Body (`content-type: application/json`):
 
 #### Testing
 
-Run `go test ./..`
+Run `go test ./...`

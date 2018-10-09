@@ -51,7 +51,7 @@ func runSimulation() {
 			errorReport <- err
 		}
 
-		transactions.UpdateOrAddToPool(fakeTransaction)
+		transactions.UpdateOrAdd(fakeTransaction)
 	}
 }
 

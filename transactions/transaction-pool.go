@@ -3,17 +3,18 @@ package transactions
 import (
 	"sync"
 
-	c "github.com/Flur3x/go-chain/common"
+	t "github.com/Flur3x/go-chain/types"
 	"github.com/google/uuid"
 )
 
 var mutex sync.Mutex
-var transactionPool = make(map[uuid.UUID]c.Transaction, 100)
+var transactionPool = make(map[uuid.UUID]t.Transaction, 100)
 
-// UpdateOrAddToPool takes a Transaction and adds it to the pool.
+// UpdateOrAdd takes a Transaction and adds it to the pool.
 // If a Transaction with the same ID is already there, it will be replaced.
-func UpdateOrAddToPool(transaction c.Transaction) {
+func UpdateOrAdd(transaction t.Transaction) {
 	mutex.Lock()
+	defer mutex.Unlock()
 
 	if _, ok := transactionPool[transaction.ID]; ok {
 		defer log.Infof("Transaction updated:\n%s\n", transaction)
@@ -22,14 +23,16 @@ func UpdateOrAddToPool(transaction c.Transaction) {
 	}
 
 	transactionPool[transaction.ID] = transaction
-	mutex.Unlock()
 }
 
-// ValidTransactions returns all transactions within the pool that
+// PopValidTransactions returns all transactions within the pool that
 // are valid and therefore ready to be added to a Block.
-func ValidTransactions() []c.Transaction {
+func PopValidTransactions() []t.Transaction {
 	mutex.Lock()
-	validTxs := make([]c.Transaction, 0, len(transactionPool))
+	defer clearTransactionPool()
+	defer mutex.Unlock()
+
+	validTxs := make([]t.Transaction, 0, len(transactionPool))
 
 	for _, tx := range transactionPool {
 		if tx.IsValid() {
@@ -37,14 +40,12 @@ func ValidTransactions() []c.Transaction {
 		}
 	}
 
-	mutex.Unlock()
-
 	return validTxs
 }
 
-// Clear overrides the transactionPool with a new, empty one.
-func Clear() {
+func clearTransactionPool() {
 	mutex.Lock()
-	transactionPool = make(map[uuid.UUID]c.Transaction, 100)
-	mutex.Unlock()
+	defer mutex.Unlock()
+
+	transactionPool = make(map[uuid.UUID]t.Transaction, 100)
 }

@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/Flur3x/go-chain/blockchain"
-	c "github.com/Flur3x/go-chain/common"
 	"github.com/Flur3x/go-chain/transactions"
+	t "github.com/Flur3x/go-chain/types"
 	"github.com/Flur3x/go-chain/wallet"
 )
 
@@ -29,8 +29,8 @@ func postTransaction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var model struct {
-		From   c.Address `json:"from"`
-		To     c.Address `json:"to"`
+		From   t.Address `json:"from"`
+		To     t.Address `json:"to"`
 		Amount uint64    `json:"amount"`
 	}
 
@@ -53,5 +53,5 @@ func postTransaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	transactions.UpdateOrAddToPool(t)
+	transactions.UpdateOrAdd(t)
 }

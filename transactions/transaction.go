@@ -3,7 +3,7 @@ package transactions
 import (
 	"strings"
 
-	c "github.com/Flur3x/go-chain/common"
+	t "github.com/Flur3x/go-chain/types"
 	"github.com/google/uuid"
 	logging "github.com/op/go-logging"
 )
@@ -11,45 +11,45 @@ import (
 var log = logging.MustGetLogger("")
 
 // New creates a "Transaction" with the given data.
-func New(from c.Address, to c.Address, amount uint64, signer c.Signer) (c.Transaction, error) {
+func New(from t.Address, to t.Address, amount uint64, signer t.Signer) (t.Transaction, error) {
 	var err error
 
-	outputs := []c.Output{
-		c.Output{
+	outputs := []t.Output{
+		t.Output{
 			Address: to,
 			Amount:  amount,
 		},
-		c.Output{
+		t.Output{
 			Address: from,
 			Amount:  0, // TODO - replace with something like "senderWallet.balance - amount"
 		},
 	}
 
-	t := c.Transaction{
+	tx := t.Transaction{
 		ID: uuid.New(),
-		Input: c.Input{
+		Input: t.Input{
 			Address: from,
 			Amount:  amount,
 		},
 		Outputs:   outputs,
-		Signature: c.Signature{},
+		Signature: t.Signature{},
 	}
 
-	hash, err := t.Hash()
+	hash, err := tx.Hash()
 
 	if err != nil {
-		return c.Transaction{}, nil
+		return t.Transaction{}, nil
 	}
 
-	if t.Signature, err = signer.Sign(hash); err != nil {
-		return c.Transaction{}, err
+	if tx.Signature, err = signer.Sign(hash); err != nil {
+		return t.Transaction{}, err
 	}
 
-	return t, nil
+	return tx, nil
 }
 
 // JoinTransactionsToString takes a slice of transactions and returns it as a single string.
-func JoinTransactionsToString(txs []c.Transaction) string {
+func JoinTransactionsToString(txs []t.Transaction) string {
 	var stringSlice []string
 
 	for _, tx := range txs {
