@@ -19,14 +19,18 @@ Have fun ❤️ and give feedback!
 
 #### Known issues
 
-For the purpose of this project, it doesn't implement a project structure pattern, like [package oriented design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html) yet. The packages are not designed to be used outside of this project. Such considerations might follow at a later time.
+- For the purpose of this project, I didn't implement a project structure pattern, like [package oriented design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html). The packages are not designed to be used outside of this project.
+
+* It's not considered good practice to pack all types in a common `/types` folder, but it was my first attempt in order to avoid dependency cycles.
 
 #### Start client
 
 Run `make run`
 
+Currently it just runs as a simulation and therefore resets the state with every new run.
+
 It will log the output to stdout, so you'll be seeing what is going on in your console.
-Errors will be written into the errors.log and the current state of the blockchain persisted in state.json. Currently it just runs as a simulation and therefore resets the state with every new run.
+Errors will be written into the `errors.log` and the current state of the blockchain persisted in `state.json`. Both files are generated in the root folder.
 
 #### Make API requests
 
