@@ -35,7 +35,13 @@ func New(from c.Address, to c.Address, amount uint64, signer c.Signer) (c.Transa
 		Signature: c.Signature{},
 	}
 
-	if t.Signature, err = signer.Sign(t.Hash()); err != nil {
+	hash, err := t.Hash()
+
+	if err != nil {
+		return c.Transaction{}, nil
+	}
+
+	if t.Signature, err = signer.Sign(hash); err != nil {
 		return c.Transaction{}, err
 	}
 

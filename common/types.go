@@ -18,20 +18,20 @@ type Balance uint64
 
 // Signature is composed of a pair of integers that is the result of the Sign function.
 type Signature struct {
-	R *big.Int
-	S *big.Int
+	R *big.Int `json:"r"`
+	S *big.Int `json:"s"`
 }
 
 // Input defines how much value an address receives.
 type Input struct {
-	Address Address
-	Amount  uint64
+	Address Address `json:"address"`
+	Amount  uint64  `json:"amount"`
 }
 
 // Output defines how much value an address sends.
 type Output struct {
-	Address Address
-	Amount  uint64
+	Address Address `json:"address"`
+	Amount  uint64  `json:"amount"`
 }
 
 //------------------------------------
@@ -49,10 +49,10 @@ type Signer interface {
 
 // Wallet represents a single user/client wallet in the go-chain.
 type Wallet struct {
-	Address    Address
-	PublicKey  ecdsa.PublicKey
-	PrivateKey ecdsa.PrivateKey
-	Balance    Balance
+	Address    Address          `json:"address"`
+	PublicKey  ecdsa.PublicKey  `json:"publicKey"`
+	PrivateKey ecdsa.PrivateKey `json:"privateKey"`
+	Balance    Balance          `json:"balance"`
 }
 
 // Sign uses the private key of the wallet to cryptographically sign the given hashed value.
@@ -76,10 +76,10 @@ func (w Wallet) String() string {
 
 // Transaction gets created and signed by an account. Will be added to a "Block" by miners.
 type Transaction struct {
-	ID        uuid.UUID
-	Input     Input
-	Outputs   []Output
-	Signature Signature
+	ID        uuid.UUID `json:"id"`
+	Input     Input     `json:"input"`
+	Outputs   []Output  `json:"outputs"`
+	Signature Signature `json:"signature"`
 }
 
 // IsValid returns "true" if transaction is valid
@@ -98,12 +98,14 @@ func (t Transaction) inputEqualsOutput() bool {
 }
 
 // Hash returns a sha256 string based on the given transaction.
-func (t Transaction) Hash() []byte {
+func (t Transaction) Hash() ([]byte, error) {
 	h := sha256.New()
 
-	h.Write([]byte(fmt.Sprintf("%+v", t)))
+	if _, err := h.Write([]byte(fmt.Sprintf("%+v", t))); err != nil {
+		return nil, err
+	}
 
-	return h.Sum(nil)
+	return h.Sum(nil), nil
 }
 
 func (t Transaction) String() string {
@@ -116,12 +118,12 @@ func (t Transaction) String() string {
 
 // Block is chained with other Blocks (lastHash) to form the blockchain.
 type Block struct {
-	Timestamp    int64
-	LastHash     string
-	Hash         string
-	Transactions []Transaction
-	Difficulty   uint64
-	Nonce        int
+	Timestamp    int64         `json:"timestamp"`
+	LastHash     string        `json:"lastHash"`
+	Hash         string        `json:"hash"`
+	Transactions []Transaction `json:"transactions"`
+	Difficulty   uint64        `json:"difficulty"`
+	Nonce        int           `json:"nonce"`
 }
 
 func (b Block) String() string {

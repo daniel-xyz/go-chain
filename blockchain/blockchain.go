@@ -13,7 +13,7 @@ var log = logging.MustGetLogger("")
 
 // State contains the general blockchain state, most importantly all mined blocks.
 type State struct {
-	Blocks []c.Block
+	Blocks []c.Block `json:"blocks"`
 }
 
 // New returns a "State" struct with the genesis block as the first and only value in it's "Blocks" slice.

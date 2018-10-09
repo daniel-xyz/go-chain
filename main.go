@@ -36,11 +36,12 @@ func runSimulation() {
 		errorReport <- err
 	}
 
+	log.Infof("\nWallets created:\n%+v\n%+v\n", myWallet, foreignWallet)
+
 	go api.Start(errorReport)
 	go miner.Start(errorReport)
 
-	log.Info("\nSimulation started 🌈\n\nFake Transactions are being created and Blocks mined ...\n")
-	log.Infof("Created new wallet:\n %+v\n", myWallet)
+	log.Info("Simulation started 🌈\n\nFake Transactions are being created and Blocks mined ...\n\n")
 
 	for range time.NewTicker(5 * time.Second).C {
 		randomAmount := uint64(rand.Int63n(10000))
