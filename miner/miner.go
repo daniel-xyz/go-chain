@@ -17,21 +17,15 @@ var (
 // Start mining. Collect pending transactions that are valid and add them to a new mined Block.
 func Start(errorReport chan<- error) {
 	for {
-		if err := mine(); err != nil {
+		if err := mineBlock(); err != nil {
 			errorReport <- err
 		}
 	}
 }
 
-func mine() error {
+func mineBlock() error {
 	txs := transactions.PopValidTransactions()
-	lastBlock, err := blockchain.LastBlock()
-
-	if err != nil {
-		return err
-	}
-
-	block, err := findValidBlock(lastBlock, txs)
+	block, err := findValidNonce(txs)
 
 	if err != nil {
 		return err
@@ -40,29 +34,49 @@ func mine() error {
 	return blockchain.AddBlock(block)
 }
 
-func findValidBlock(lastBlock t.Block, txs []t.Transaction) (t.Block, error) {
+func findValidNonce(txs []t.Transaction) (t.Block, error) {
 	for nonce := 0; ; nonce++ {
-		difficulty := currentDifficulty(lastBlock)
-		timestamp := currentTimestamp()
-		hash, err := blockchain.HashBlockValues(timestamp, lastBlock.Hash, txs, difficulty, nonce)
+		block, isValid, err := tryNonce(nonce, txs)
 
 		if err != nil {
-			return t.Block{}, nil
+			return t.Block{}, err
 		}
 
-		hasFoundValidHash := strings.HasPrefix(hash, strings.Repeat("0", int(difficulty)))
-
-		if hasFoundValidHash {
-			return t.Block{
-				Timestamp:    timestamp,
-				LastHash:     lastBlock.Hash,
-				Hash:         hash,
-				Transactions: txs,
-				Difficulty:   difficulty,
-				Nonce:        nonce,
-			}, nil
+		if isValid {
+			return block, nil
 		}
 	}
+}
+
+func tryNonce(nonce int, txs []t.Transaction) (t.Block, bool, error) {
+	lastBlock, err := blockchain.LastBlock()
+
+	if err != nil {
+		return t.Block{}, false, nil
+	}
+
+	difficulty := currentDifficulty(lastBlock)
+	timestamp := currentTimestamp()
+	hash, err := blockchain.HashBlockValues(timestamp, lastBlock.Hash, txs, difficulty, nonce)
+
+	if err != nil {
+		return t.Block{}, false, nil
+	}
+
+	hasFoundValidHash := strings.HasPrefix(hash, strings.Repeat("0", int(difficulty)))
+
+	if hasFoundValidHash {
+		return t.Block{
+			Timestamp:    timestamp,
+			LastHash:     lastBlock.Hash,
+			Hash:         hash,
+			Transactions: txs,
+			Difficulty:   difficulty,
+			Nonce:        nonce,
+		}, true, nil
+	}
+
+	return t.Block{}, false, nil
 }
 
 func currentDifficulty(lastBlock t.Block) uint64 {

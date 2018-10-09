@@ -17,9 +17,13 @@ This is my personal project to get into the Go programming language (Golang) for
 
 Have fun ❤️ and give feedback!
 
+#### Known issues
+
+For the purpose of this project, it doesn't implement a project structure pattern, like [package oriented design](https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html) yet. The packages are not designed to be used outside of this project. Such considerations might follow at a later time.
+
 #### Start client
 
-Run `go run`
+Run `make run`
 
 It will log the output to stdout, so you'll be seeing what is going on in your console.
 Errors will be written into the errors.log and the current state of the blockchain persisted in state.json. Currently it just runs as a simulation and therefore resets the state with every new run.
@@ -46,4 +50,9 @@ Body (`content-type: application/json`):
 
 #### Testing
 
-Run `go test ./...`
+Run `make test`
+
+#### Other useful commands
+
+`make linter`
+`make test-coverage-report`

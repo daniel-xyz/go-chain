@@ -2,7 +2,6 @@ package blockchain
 
 import (
 	"crypto/sha256"
-	"errors"
 	"fmt"
 
 	"github.com/Flur3x/go-chain/transactions"
@@ -29,7 +28,7 @@ func VerifyBlockHash(b t.Block) (bool, error) {
 		return false, err
 	}
 
-	return hash == b.Hash, errors.New("this is an error")
+	return hash == b.Hash, nil
 }
 
 // HashBlockValues takes values of a Block, plus a nonce, and receives the derived hash string.

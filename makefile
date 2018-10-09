@@ -1,3 +1,9 @@
+run:
+	go run .
+
+test:
+	go test ./...
+
 test-coverage:
 	go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
 
