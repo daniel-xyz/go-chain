@@ -3,3 +3,8 @@ state.json
 
 // Logging
 errors.log
+
+// Tests
+cover.html
+coverage.txt
+coverage.out
