@@ -21,7 +21,6 @@ func (s *State) IsValidChain() bool {
 	isGenesisBlockValid := cmp.Equal(s.Blocks[0], NewGenesisBlock())
 
 	hasOnlyValidHashes := func() bool {
-		log.Warning("ha")
 		for i := 1; i < len(s.Blocks); i++ {
 
 			isHashValid, err := VerifyBlockHash(s.Blocks[i])
