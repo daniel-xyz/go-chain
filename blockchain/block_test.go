@@ -26,7 +26,7 @@ func TestNewGenesisBlockReturnsCorrectBlock(t *testing.T) {
 	}
 }
 
-func TestHashReturnsCorrectHash(t *testing.T) {
+func TestHashBlockValuesReturnsCorrectHash(t *testing.T) {
 	b := types.Block{
 		Timestamp:    1539075941,
 		LastHash:     "0000080800715081b76f2e5dd2fc11ac08900b3d3cb0fb526ffb8dba2c2c7a8d",
